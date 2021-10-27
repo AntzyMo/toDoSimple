@@ -7,14 +7,18 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "@ant-design/icons": "^4.7.0",
     "animate.css": "^4.1.1",
     "antd": "^4.16.13",
     "axios": "^0.24.0",
-    "dva": "^2.4.1",
     "react": "^17.0.0",
+    "react-addons-css-transition-group": "^15.6.2",
     "react-color": "^2.19.3",
     "react-dom": "^17.0.0",
-    "react-router-dom": "^5.3.0"
+    "react-redux": "^7.2.6",
+    "react-router-dom": "^5.3.0",
+    "react-transition-group": "^4.4.2",
+    "redux": "^4.1.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^1.0.0",

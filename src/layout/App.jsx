@@ -1,11 +1,13 @@
 import { useState } from 'react'
-import'./App.less'
+import './App.less'
 import 'antd/dist/antd.css';
-import CardCom from '@/components/cardCom/index'
+import Index from '@/views/index/index'
 import { Layout } from 'antd';
 const { Header, Content, Sider } = Layout;
 
 function App() {
+  
+
   return (
     <div className="App">
       <Layout className="layoutPage" >
@@ -20,11 +22,13 @@ function App() {
           <Header style={{ padding: 0, height: '50px', background: '#16191D' }} />
           <Content style={{ background: ' #1a1b20' }}>
             <div style={{ padding: 24, background: ' #1a1b20' }}>
-              <CardCom />
+              <Index/>
             </div>
           </Content>
         </Layout>
       </Layout>
+
+     
     </div>
   )
 }

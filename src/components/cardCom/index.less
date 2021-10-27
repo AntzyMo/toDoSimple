@@ -3,19 +3,51 @@
   color: skyblue;
   width: 300px;
   height: 200px;
-  
+  border-radius: 5px;
+  padding: 10px 0;
+
+  .header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 0 20px;
+
+    .cardTitle{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .title-txt{
+        margin-left: 10px;
+      }
+    }
+  }
+
+  .content{
+    .checkbox{
+        cursor: pointer;
+        width: 100%;
+        padding: 10px 20px;
+        &:hover{
+          background: #16191d;
+        }
+
+
+        .checkedbox{
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          
+          .acText{
+            // font-size: 16px;
+          }
+        }
+    }
+  }
 }
 
-.btnBox{
-  display: flex;
-  justify-content: flex-end;
+.alert-enter{
+  opacity: 0;
+  transform: translateX(100%);
 }
-
-.cardTitle{
-  color:#fff;
-}
-
-.cfff{
-  color: #fff;
-}
-
