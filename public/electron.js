@@ -4,16 +4,16 @@ const path =require('path')
 
 // 创建浏览器窗口
 const createWindow = () => {
-  const win = new BrowserWindow({
+  let win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
+      contextIsolation:true,
       preload:path.join(__dirname,'preload.js')
     }
   })
 
   win.loadURL('http://localhost:3000/')
-
   // 关闭window时触发下列事件.
   win.on('closed', function () {
     win = null

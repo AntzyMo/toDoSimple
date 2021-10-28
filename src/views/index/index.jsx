@@ -2,9 +2,8 @@ import CardCom from '@/components/cardCom/index'
 import { FireFilled } from '@ant-design/icons'
 import { Drawer, Input } from 'antd'
 import ColorPicker from '@/components/colorPicker/index'
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import './index.less'
-import electron from 'electron'
 const Index = (porps) => {
   const [visible, setVisible] = useState(false)
   const [todoList, settodoList] = useState([
@@ -45,6 +44,9 @@ const Index = (porps) => {
   const openColorBox = () => {
     setVisible(true)
   }
+  useEffect(() => {
+    window.electron.doThing()
+  })
 
   const clickEnter = (e) => {
     let { value } = e.target
@@ -52,8 +54,7 @@ const Index = (porps) => {
     // ipcRenderer.send('writeFile', value)
   }
 
-  console.log(window.ipcRenderer,'electron')
-  console.log(window.$tesaat,'tesaat')
+  // console.log(node-version,'node-version')
   return (
     <>
 
@@ -73,13 +74,13 @@ const Index = (porps) => {
         </div>
       </div>
 
-      <div className="cardList">
+      {/* <div className="cardList">
         {todoList.map((item, index) => (
           <div className="cardbox">
             <CardCom key={index} title={item.title} list={item.list} onPressEnter={clickEnter} />
           </div>
         ))}
-      </div>
+      </div> */}
 
       {/* 换肤 */}
       <div className="colorBox" onClick={openColorBox}>

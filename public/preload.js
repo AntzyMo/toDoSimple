@@ -1,4 +1,8 @@
+const { contextBridge, ipcRenderer } = require('electron')
 
-
-
-window.ipcRenderer=require('electron').ipcRenderer
+contextBridge.exposeInMainWorld(
+  'electron',
+  {
+    doThing: () => console.log(1111)
+  }
+)
