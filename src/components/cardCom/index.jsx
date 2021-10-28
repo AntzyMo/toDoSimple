@@ -1,36 +1,35 @@
 import React from 'react'
-import { Checkbox, Button, Image } from 'antd';
+import { Checkbox, Button } from 'antd';
 import './index.less'
-import { CSSTransition } from 'react-transition-group'
 import { Component } from 'react'
-import 'animate.css'
-import { CheckOutlined } from '@ant-design/icons'
-export default class CardCom extends Component {
+import PropTypes from 'prop-types'
+
+class CardCom extends Component {
   constructor(props) {
     super(props)
-    console.log(ReactEmoji, 'ReactEmoji')
     this.state = {
-      list: [{
-        id: 0,
-        text: '村上春树',
-        checked: false
-      },
-      {
-        id: 1,
-        text: '村上春树测试',
-        checked: false
-      }]
+      title: props.title,
+      list: props.list
     }
   }
 
 
   clickCheck(e, item, index) {
-    let { list } = this.state
     e.preventDefault() //阻止默认行为
+    let { list } = this.state
     let arr = [...list]
-    arr[index].checked = true
+    let fileds = arr[index]
+    let lastChild = index != arr.length - 1
+    if (fileds.checked) return
+
+    fileds.checked = true
+    fileds.class = 'fadeOutLeft'
     this.setState({ list: arr })
+
     setTimeout(() => {
+      fileds.showCheckIcon = true
+      fileds.class = "fadeInLeft"
+      lastChild && (arr[index + 1].upclass = 'slideInUp')
       arr.push(arr.splice(index, 1)[0])
       this.setState({ list: arr })
     }, 500)
@@ -38,37 +37,34 @@ export default class CardCom extends Component {
 
 
 
-
   render() {
-    const { list } = this.state
+    const { title, list } = this.state
     return (
       <>
         <div className="cardBox">
           <div className="header">
             <div className="cardTitle">
-              <Image width={20} src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" />
-              <div className="title-txt">周一</div>
+              {/* <img src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" /> */}
+              <div className="title-txt">{title}</div>
             </div>
             <Button type="link" size="small">删除</Button>
           </div>
 
           <div className="content">
             {list.map((item, index) => (
-              <CSSTransition
-                key={index}
-                in={true}
-                timeout={200}
-                classNames="animate__animated animate__animated"
-                unmountOnExit
-              >
-                <div className="checkbox " onClick={(e) => this.clickCheck(e, item, index)}>
-                  <Checkbox checked={item.checked} style={{ color: 'skyblue' }}>{item.text}</Checkbox>
-                  <div className="checkedbox">
-                    <div className="acText">{item.text}</div>
-                    <CheckOutlined style={{ color: '#17f917', fontWeight: 'bold' }} />
-                  </div>
-                </div>
-              </CSSTransition>
+              <div key={index} className={`checkbox animate__animated animate__${item.upclass}`} onClick={(e) => this.clickCheck(e, item, index)}>
+                {
+                  item.showCheckIcon ?
+                    (<div className={`checkedbox animate__animated animate__${item.class}`} >
+                      <div className="acText">{item.text}</div>
+                      <img className="checkicon" src="/src/assets/check.png" />
+                    </div>)
+                    :
+                    <Checkbox className={`animate__animated animate__${item.class}`} checked={item.checked} style={{ color: 'skyblue' }}>{item.text}</Checkbox>
+
+                }
+
+              </div>
             ))}
 
           </div>
@@ -78,9 +74,11 @@ export default class CardCom extends Component {
     )
   }
 
-
-
 }
 
+CardCom.propTypes = {
+  list: PropTypes.object.isRequired
+}
 
+export default CardCom
 

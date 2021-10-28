@@ -1,5 +1,57 @@
+.addCardBox{
+  background: #222224;
+  color: skyblue;
+  width: 300px;
+  height: 200px;
+  border-radius: 5px;
+  padding: 10px 0;
+
+  .header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 0 20px;
+
+  }
+
+  .content{
+    .addcrad{
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      .square{
+        width: 15px;
+        height: 15px;
+        border: 1px solid #565656;
+        margin-right: 10px;
+      }
+
+      .input{
+        color: skyblue;
+      }
+    }
+  }
+}
+
+
+.cardList {
+  display: flex;
+  flex-wrap: wrap;
+  .cardbox {
+    margin-right: 10px;
+    margin-bottom: 40px;
+  }
+
+  :nth-child(5) {
+    margin-right: 0;
+  }
+
+}
+
 .colorItem {
   margin-bottom: 20px;
+
   .linebox {
     width: 100px;
     height: 25px;
