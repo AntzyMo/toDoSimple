@@ -54,9 +54,7 @@ const Index = (porps) => {
   const openColorBox = () => {
     setVisible(true)
   }
-  useEffect(() => {
-    window.electron.doThing()
-  })
+ 
 
   // inpuit框获取值
   const changeInput = (e, index) => {
@@ -90,7 +88,7 @@ const Index = (porps) => {
   }
 
   const getToDoList =()=>{
-    ipcRenderer.send('readFile', new Date().toISOString().slice(0, 10))
+    ipcRenderer.send('getFiles')
   }
 
   useEffect(() => {
@@ -101,6 +99,10 @@ const Index = (porps) => {
       }
     })
     getToDoList()
+
+    ipcRenderer.on('getFile', (event, arg) => {
+      console.log(arg,'arr')
+    })
 
   }, [])
   return (
