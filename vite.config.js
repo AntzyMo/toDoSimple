@@ -9,5 +9,8 @@ export default defineConfig({
     alias: {
       '@': resolve(__dirname, 'src'),
     }
-  }
+  },
+  optimizeDeps: {
+    exclude: ['electron'], // 告诉 Vite 不要转换 electron 模块
+  },
 })

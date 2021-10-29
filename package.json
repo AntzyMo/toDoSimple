@@ -1,13 +1,13 @@
 {
   "name": "todosimple",
   "version": "0.0.0",
-  "main":"./public/electron.js",
+  "main": "./src/render/electron.js",
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
     "serve": "vite preview",
-    "start":"electron .",
-    "edev":"yarn dev | yarn start"
+    "start": "electron .",
+    "edev": "yarn dev | yarn start"
   },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^1.0.0",
+    "electron-reloader": "^1.2.1",
     "less": "^4.1.2",
     "vite": "^2.6.4"
   }

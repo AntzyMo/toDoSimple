@@ -1,18 +1,24 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
-// require('./file')
-const path =require('path')
+const { app, BrowserWindow } = require('electron')
+require('./file')
 
+// try {
+//   require('electron-reloader')(module);
+// } catch { }
 // 创建浏览器窗口
 const createWindow = () => {
-  const win = new BrowserWindow({
+  let win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
-      preload:path.join(__dirname,'preload.js')
+      devTools: true,
+      nodeIntegration: true,
+      contextIsolation: false
+
     }
   })
 
   win.loadURL('http://localhost:3000/')
+  win.webContents.toggleDevTools() //打开调试工具
 
   // 关闭window时触发下列事件.
   win.on('closed', function () {
@@ -25,13 +31,14 @@ const createWindow = () => {
 app.whenReady().then(() => {
   createWindow()
 
-   //监听应用打开 （macOs）
+  //监听应用打开 （macOs）
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow()
     }
   }
-)})
+  )
+})
 
 
 // 所有窗口关闭时退出应用.
@@ -40,9 +47,4 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
-})
-
-
-ipcMain.on('writeFile', (event, arg) => {
-  console.log(event, arg, 'event,arg')
 })

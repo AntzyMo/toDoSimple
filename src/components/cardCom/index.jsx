@@ -35,8 +35,6 @@ class CardCom extends Component {
     }, 500)
   }
 
-
-
   render() {
     const { title, list } = this.state
     return (
@@ -77,7 +75,8 @@ class CardCom extends Component {
 }
 
 CardCom.propTypes = {
-  list: PropTypes.object.isRequired
+  list: PropTypes.array.isRequired,
+  title:PropTypes.string.isRequired
 }
 
 export default CardCom

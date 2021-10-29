@@ -1,18 +1,28 @@
 import CardCom from '@/components/cardCom/index'
 import { FireFilled } from '@ant-design/icons'
-import { Drawer, Input } from 'antd'
+import { Drawer, Input, Button } from 'antd'
 import ColorPicker from '@/components/colorPicker/index'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
+const { ipcRenderer } = require('electron')
 import './index.less'
-import electron from 'electron'
+
+
 const Index = (porps) => {
+  const createaddToList = () => ({
+    text: '',
+    checked: false,
+    showCheckIcon: false,
+    class: '',
+    upclass: ''
+  })
   const [visible, setVisible] = useState(false)
+  const contRef = useRef()
+  const [addToList, setaddToList] = useState([createaddToList()])
   const [todoList, settodoList] = useState([
     {
       title: '28 周一',
       list: [
         {
-          id: 0,
           text: '村上春树',
           checked: false,
           showCheckIcon: false,
@@ -20,7 +30,6 @@ const Index = (porps) => {
           upclass: ''
         },
         {
-          id: 1,
           text: '村上春树测试',
           checked: false,
           showCheckIcon: false,
@@ -46,39 +55,83 @@ const Index = (porps) => {
     setVisible(true)
   }
 
-  const clickEnter = (e) => {
+  // inpuit框获取值
+  const changeInput = (e, index) => {
     let { value } = e.target
-    console.log(value, 'value')
-    // ipcRenderer.send('writeFile', value)
+    let list = [...addToList]
+    list[index].text = value
+    setaddToList(list)
   }
 
-  console.log(window.ipcRenderer,'electron')
-  console.log(window.$tesaat,'tesaat')
+  // 回车
+  const clickEnter = e => {
+    let { value } = e.target
+    let list = [...addToList]
+    if (!value) return
+    list.push(createaddToList())
+    setaddToList(list)
+    contRef.current.scrollTo(0, contRef.current.scrollHeight)
+  }
+
+  const clickSave = () => {
+    console.log(addToList, 'add')
+    if (addToList.length == 1 && addToList[0].text == '') return
+
+    let params = {
+      title: new Date().toISOString().slice(0, 10),
+      list: addToList[addToList.length - 1].text == '' ? addToList.slice(0, -1) : addToList
+    }
+
+    // 写入本地
+    ipcRenderer.send('writeFile', params)
+  }
+
+  const getToDoList =()=>{
+    ipcRenderer.send('readFile', new Date().toISOString().slice(0, 10))
+  }
+
+  useEffect(() => {
+    // 监听本地写入成功
+    ipcRenderer.on('onWrite', (event, arg) => {
+      if(arg){
+
+      }
+    })
+    getToDoList()
+
+  }, [])
   return (
     <>
-
-      <div className="addCardBox">
-        <div className="header">
-          <div className="cardTitle">
-            <div className="title-txt">28 周一</div>
+      <div className="box">
+        <div className="addCardBox">
+          <div className="header">
+            <div className="cardTitle">
+              <div className="title-txt">28 周一</div>
+            </div>
           </div>
+
+          <div className="content" ref={contRef}>
+
+            {addToList.map((item, index) => (
+              <div key={index} className="addcrad" >
+                <div className="square" />
+                <Input className="input" autoFocus onChange={e => changeInput(e, index)} placeholder="请输入待办事项" onPressEnter={e => clickEnter(e, index)} />
+              </div>
+            ))}
+
+
+          </div>
+
+          <Button className="saveBtn" onClick={clickSave} type="link">保存</Button>
         </div>
 
-        <div className="content">
-          <div className="addcrad">
-            <div className="square" />
-            <Input placeholder="请输入待办事项" />
-          </div>
-
+        <div className="cardList">
+          {todoList.map((item, index) => (
+            <div key={index} className="cardbox">
+              <CardCom title={item.title} list={item.list} />
+            </div>
+          ))}
         </div>
-      </div>
-
-      <div className="cardList">
-        {todoList.map((item, index) => (
-          <div className="cardbox">
-            <CardCom key={index} title={item.title} list={item.list} onPressEnter={clickEnter} />
-          </div>
-        ))}
       </div>
 
       {/* 换肤 */}

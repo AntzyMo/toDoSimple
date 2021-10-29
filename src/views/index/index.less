@@ -1,70 +1,102 @@
-.addCardBox{
-  background: #222224;
-  color: skyblue;
-  width: 300px;
-  height: 200px;
-  border-radius: 5px;
-  padding: 10px 0;
+.box {
+  display: flex;
+  align-items: center;
 
-  .header{
+  .addCardBox {
+    background: #222224;
+    color: skyblue;
+    width: 300px;
+    height: 214px;
+    border-radius: 5px;
+    padding: 10px 0;
+    overflow: hidden;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    padding: 0 20px;
+    flex-direction: column;
 
-  }
-
-  .content{
-    .addcrad{
+    .header {
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
       padding: 0 20px;
-      .square{
-        width: 15px;
-        height: 15px;
-        border: 1px solid #565656;
-        margin-right: 10px;
+
+    }
+
+    .content {
+      flex: 1;
+      overflow: hidden;
+      overflow-y: auto;
+
+      &::-webkit-scrollbar {
+        width: 7px;
+        height: 7px;
+        border-radius: 7px;
       }
 
-      .input{
-        color: skyblue;
+      &::-webkit-scrollbar-thumb {
+        background: #90939980;
+        border-radius: 7px;
+      }
+
+      .addcrad {
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        margin-bottom: 8px;
+
+        .square {
+          width: 15px;
+          height: 15px;
+          border: 1px solid #565656;
+          margin-right: 10px;
+        }
+
+        .input {
+          color: skyblue;
+          background: transparent;
+          border-color: transparent;
+        }
       }
     }
-  }
-}
 
-
-.cardList {
-  display: flex;
-  flex-wrap: wrap;
-  .cardbox {
-    margin-right: 10px;
-    margin-bottom: 40px;
+    .saveBtn {
+      text-align: end;
+    }
   }
 
-  :nth-child(5) {
-    margin-right: 0;
+
+  .cardList {
+    display: flex;
+    flex-wrap: wrap;
+
+    .cardbox {
+      margin-right: 10px;
+      margin-bottom: 40px;
+    }
+
+    :nth-child(5) {
+      margin-right: 0;
+    }
+
   }
 
-}
+  .colorItem {
+    margin-bottom: 20px;
 
-.colorItem {
-  margin-bottom: 20px;
+    .linebox {
+      width: 100px;
+      height: 25px;
+      border-radius: 2px;
+      padding: 5px 10px;
+      border: 1px solid #ccc;
+      cursor: pointer;
 
-  .linebox {
-    width: 100px;
-    height: 25px;
-    border-radius: 2px;
-    padding: 5px 10px;
-    border: 1px solid #ccc;
-    cursor: pointer;
+      .line {
+        width: 100%;
+        height: 100%;
+        background: skyblue;
 
-    .line {
-      width: 100%;
-      height: 100%;
-      background: skyblue;
-
+      }
     }
   }
 }
