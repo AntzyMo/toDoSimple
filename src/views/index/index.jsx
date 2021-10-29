@@ -54,6 +54,9 @@ const Index = (porps) => {
   const openColorBox = () => {
     setVisible(true)
   }
+  useEffect(() => {
+    window.electron.doThing()
+  })
 
   // inpuit框获取值
   const changeInput = (e, index) => {
