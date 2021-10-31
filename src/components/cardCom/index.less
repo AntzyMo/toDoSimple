@@ -1,63 +1,83 @@
-.cardBox{
+.cardBox {
   background: #222224;
   color: skyblue;
   width: 300px;
-  height: 200px;
+  height: 214px;
   border-radius: 5px;
   padding: 10px 0;
+  display: flex;
+  flex-direction: column;
 
-  .header{
+
+  .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 20px;
     padding: 0 20px;
 
-    .cardTitle{
+    .cardTitle {
       display: flex;
       align-items: center;
       justify-content: space-between;
 
-      img{
+      img {
         width: 20px;
         height: 20px;
       }
 
-      .title-txt{
+      .title-txt {
         margin-left: 10px;
       }
     }
   }
 
-  .content{
-    .checkbox{
-        cursor: pointer;
-        width: 100%;
-        padding: 10px 20px;
-        &:hover{
-          background: #16191d;
+  .content {
+    flex: 1;
+    overflow: hidden;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+      border-radius: 7px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #90939980;
+      border-radius: 7px;
+    }
+
+
+    .checkbox {
+      cursor: pointer;
+      width: 100%;
+      padding: 10px 20px;
+
+      &:hover {
+        background: #16191d;
+      }
+
+
+      .checkedbox {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .acText {
+          // font-size: 16px;
         }
 
-
-        .checkedbox{
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          
-          .acText{
-            // font-size: 16px;
-          }
-
-          .checkicon{
-            width: 16px;
-            height: 16px;
-          }
+        .checkicon {
+          width: 16px;
+          height: 16px;
         }
+      }
     }
   }
 }
 
-.alert-enter{
+.alert-enter {
   opacity: 0;
   transform: translateX(100%);
 }

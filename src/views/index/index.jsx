@@ -6,39 +6,19 @@ import { useState, useRef, useEffect } from 'react'
 const { ipcRenderer } = require('electron')
 import './index.less'
 
+const createaddToList = () => ({
+  text: '',
+  checked: false,
+  showCheckIcon: false,
+  class: '',
+  upclass: ''
+})
 
-const Index = (porps) => {
-  const createaddToList = () => ({
-    text: '',
-    checked: false,
-    showCheckIcon: false,
-    class: '',
-    upclass: ''
-  })
+const Index = () => {
   const [visible, setVisible] = useState(false)
   const contRef = useRef()
   const [addToList, setaddToList] = useState([createaddToList()])
-  const [todoList, settodoList] = useState([
-    {
-      title: '28 周一',
-      list: [
-        {
-          text: '村上春树',
-          checked: false,
-          showCheckIcon: false,
-          class: '',
-          upclass: ''
-        },
-        {
-          text: '村上春树测试',
-          checked: false,
-          showCheckIcon: false,
-          class: '',
-          upclass: ''
-        }
-      ]
-    }
-  ])
+  const [todoList, settodoList] = useState([])
   const [list, setList] = useState([
     {
       title: '内容区背景颜色',
@@ -74,6 +54,7 @@ const Index = (porps) => {
     contRef.current.scrollTo(0, contRef.current.scrollHeight)
   }
 
+    // 点击保存
   const clickSave = () => {
     console.log(addToList, 'add')
     if (addToList.length == 1 && addToList[0].text == '') return
@@ -85,26 +66,45 @@ const Index = (porps) => {
 
     // 写入本地
     ipcRenderer.send('writeFile', params)
+
+      // 监听本地写入成功
+      ipcRenderer.on('onWrite', (event, {status,msg}) => {
+        if(status){
+            console.log(1111)
+          // setaddToList([createaddToList()])
+          
+          getToDoList()
+          return 
+        }
+      })
+  
   }
 
+    // 删除卡片
+  const deleteCard=(title)=>{
+    ipcRenderer.send('deleteFile', title)
+    ipcRenderer.on('onDelete',(event,{status,msg})=>{
+      if(status){
+        getToDoList()
+      }else{
+        console.log(msg,'delmsg')
+      }
+    })
+  }
+
+  // 获取list
   const getToDoList =()=>{
     ipcRenderer.send('getFiles')
+    ipcRenderer.on('getFile', (event, arg) => {
+      console.log(arg,'ar11g')
+      settodoList(arg)
+    })
   }
 
   useEffect(() => {
-    // 监听本地写入成功
-    ipcRenderer.on('onWrite', (event, arg) => {
-      if(arg){
-
-      }
-    })
     getToDoList()
-
-    ipcRenderer.on('getFile', (event, arg) => {
-      console.log(arg,'arr')
-    })
-
   }, [])
+
   return (
     <>
       <div className="box">
@@ -127,13 +127,13 @@ const Index = (porps) => {
 
           </div>
 
-          <Button className="saveBtn" onClick={clickSave} type="link">保存</Button>
+          <Button className="saveBtn" onClick={clickSave} type="link" >保存</Button>
         </div>
 
         <div className="cardList">
           {todoList.map((item, index) => (
-            <div key={index} className="cardbox">
-              <CardCom title={item.title} list={item.list} />
+            <div key={index} className="cardboxout">
+              <CardCom title={item.title} list={item.list} deleteCard={deleteCard} />
             </div>
           ))}
         </div>

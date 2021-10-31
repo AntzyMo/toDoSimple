@@ -3,6 +3,7 @@ import { Checkbox, Button } from 'antd';
 import './index.less'
 import { Component } from 'react'
 import PropTypes from 'prop-types'
+const { ipcRenderer } = require('electron')
 
 class CardCom extends Component {
   constructor(props) {
@@ -35,6 +36,8 @@ class CardCom extends Component {
     }, 500)
   }
 
+
+
   render() {
     const { title, list } = this.state
     return (
@@ -45,7 +48,7 @@ class CardCom extends Component {
               {/* <img src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" /> */}
               <div className="title-txt">{title}</div>
             </div>
-            <Button type="link" size="small">删除</Button>
+            <Button type="link" size="small" onClick={()=>this.props.deleteCard(title)}>删除</Button>
           </div>
 
           <div className="content">

@@ -1,7 +1,6 @@
+const { createCipheriv } = require('crypto')
 const { ipcMain } = require('electron')
 const fs = require('fs')
-const { reject } = require('lodash')
-const { resolve } = require('path')
 const path = require('path')
 const baseFileUrl = (title = '') => `${path.join(__dirname, 'data', title)}`
 
@@ -13,8 +12,7 @@ const readFile = file => {
         reject(err)
         return
       }
-      console.log(data, 'data')
-      resolve(data)
+      resolve(JSON.parse(data))
     })
   })
 }
@@ -35,6 +33,8 @@ const writeFile = (file, data) => {
 
 
 
+
+
 // 封装查找data文件夹里面的数据
 const readdir = (file) => {
   return new Promise((resolve, reject) => {
@@ -50,14 +50,31 @@ const readdir = (file) => {
 }
 
 
+// 封装删除文件
+// url.replace(/\\/g, "/")
+ function deleteFile(url) {
+  return new Promise((resolve, reject) => {
+      fs.unlink(url, err => {
+          if (err) {
+              reject(err)
+          } else {
+              resolve()
+          }
+
+      })
+  })
+}
+
+
 ipcMain.on('writeFile', async (event, arg) => {
   let { title } = arg
   let fileUrl = baseFileUrl(title) + '.json'
+  console.log(arg, 'are')
   try {
     await writeFile(fileUrl, JSON.stringify(arg))
-    event.reply('onWrite', true)
+    event.reply('onWrite', { status: true })
   } catch (err) {
-    event.reply('onWrite', err)
+    event.reply('onWrite', { status: false, msg: err })
 
   }
 })
@@ -67,25 +84,41 @@ ipcMain.on('writeFile', async (event, arg) => {
 // 单个读取
 
 ipcMain.on('getFiles', async (event, arg) => {
-  let fileUrl = null
-  if(arg){
+  let fileUrl = null, FileArr = []
+  if (arg) {
     // 单个读取
-    fileUrl=  baseFileUrl(arg) + '.json'
-    return 
+    fileUrl = baseFileUrl(arg) + '.json'
+    FileArr = [readFile(fileUrl)]
+  } else {
+    // 获取的是文件名
+    let filesArrName = await readdir(baseFileUrl())
+    // 拼接绝对路径
+    FileArr = filesArrName.map(item => readFile(baseFileUrl(item)))
   }
 
-  fileUrl =baseFileUrl()
-  let filesArrName=await readdir(fileUrl)
-  fileUrl=baseFileUrl(filesArrName[0])
-  console.log(filesArrName,'filesArrName')
-  console.log(fileUrl,'fileUrl')
+
   try {
-    let data=await readFile(fileUrl, JSON.stringify(arg))
-    console.log(data,'daa')
-    event.reply('getFile',[data])
+    let res = await Promise.all(FileArr)
+    console.log(res, 'res')
+    event.reply('getFile', res)
   } catch (err) {
-
+    console.log(err, 'err111')
   }
+})
+
+
+// 删除文件
+ipcMain.on('deleteFile', async (event, arg) => {
+ let fileUrl = baseFileUrl(arg) + '.json'
+ try{
+   await deleteFile(fileUrl)
+   event.reply('onDelete',{status:true})
+ }catch(err){
+   console.log(err,'err')
+   event.reply('onDelete',{status:false,msg:err})
+
+ }
+ 
 })
 
 
