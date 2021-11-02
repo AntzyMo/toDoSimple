@@ -1,6 +1,8 @@
 const { app, BrowserWindow } = require('electron')
+const path = require('path')
 require('./file')
 
+const NODE_ENV = process.env.NODE_ENV
 // try {
 //   require('electron-reloader')(module);
 // } catch { }
@@ -16,8 +18,12 @@ const createWindow = () => {
     }
   })
 
-  win.loadURL('http://localhost:3000/')
-  win.webContents.toggleDevTools() //打开调试工具
+  win.loadURL(NODE_ENV = 'development' ? 'http://localhost:3000/'
+    : `file://${path.join(__dirname, '../dist/index.html')}`)
+
+  if (NODE_ENV = 'development') {
+    win.webContents.toggleDevTools() //打开调试工具
+  }
 
   // 关闭window时触发下列事件.
   win.on('closed', function () {

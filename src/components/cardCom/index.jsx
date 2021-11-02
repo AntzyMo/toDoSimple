@@ -3,7 +3,6 @@ import { Checkbox, Button } from 'antd';
 import './index.less'
 import { Component } from 'react'
 import PropTypes from 'prop-types'
-const { ipcRenderer } = require('electron')
 
 class CardCom extends Component {
   constructor(props) {
@@ -17,7 +16,7 @@ class CardCom extends Component {
 
   clickCheck(e, item, index) {
     e.preventDefault() //阻止默认行为
-    let { list } = this.state
+    let { list, title } = this.state
     let arr = [...list]
     let fileds = arr[index]
     let lastChild = index != arr.length - 1
@@ -26,13 +25,14 @@ class CardCom extends Component {
     fileds.checked = true
     fileds.class = 'fadeOutLeft'
     this.setState({ list: arr })
-
     setTimeout(() => {
       fileds.showCheckIcon = true
       fileds.class = "fadeInLeft"
       lastChild && (arr[index + 1].upclass = 'slideInUp')
       arr.push(arr.splice(index, 1)[0])
       this.setState({ list: arr })
+      console.log(arr,'arr')
+      this.props.checkCard(title,arr)
     }, 500)
   }
 
@@ -48,20 +48,20 @@ class CardCom extends Component {
               {/* <img src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" /> */}
               <div className="title-txt">{title}</div>
             </div>
-            <Button type="link" size="small" onClick={()=>this.props.deleteCard(title)}>删除</Button>
+            <Button type="link" size="small" onClick={() => this.props.deleteCard(title)}>删除</Button>
           </div>
 
           <div className="content">
             {list.map((item, index) => (
-              <div key={index} className={`checkbox animate__animated animate__${item.upclass}`} onClick={(e) => this.clickCheck(e, item, index)}>
+              <div key={index} className={`checkbox animate__animated animate__${item.upclass||''}`} onClick={(e) => this.clickCheck(e, item, index)}>
                 {
                   item.showCheckIcon ?
-                    (<div className={`checkedbox animate__animated animate__${item.class}`} >
+                    (<div className={`checkedbox animate__animated animate__${item.class||''}`} >
                       <div className="acText">{item.text}</div>
                       <img className="checkicon" src="/src/assets/check.png" />
                     </div>)
                     :
-                    <Checkbox className={`animate__animated animate__${item.class}`} checked={item.checked} style={{ color: 'skyblue' }}>{item.text}</Checkbox>
+                    <Checkbox className={`animate__animated animate__${item.class||''}`} checked={item.checked} style={{ color: 'skyblue' }}>{item.text}</Checkbox>
 
                 }
 
@@ -79,7 +79,7 @@ class CardCom extends Component {
 
 CardCom.propTypes = {
   list: PropTypes.array.isRequired,
-  title:PropTypes.string.isRequired
+  title: PropTypes.string.isRequired
 }
 
 export default CardCom

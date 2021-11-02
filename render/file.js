@@ -118,10 +118,17 @@ ipcMain.on('deleteFile', async (event, arg) => {
    event.reply('onDelete',{status:false,msg:err})
 
  }
- 
 })
 
 
+
+// 修改文件
+ipcMain.on('updateFile',async (event,{title,list})=>{
+  let fileUrl= baseFileUrl(title) + '.json'
+  let json =await readFile(fileUrl)
+  json.list=list
+  writeFile(fileUrl, JSON.stringify(json))
+})
 
 
 

@@ -1,12 +1,13 @@
 {
   "name": "todosimple",
   "version": "0.0.0",
-  "main": "./src/render/electron.js",
+  "main": "./render/electron.js",
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
+    "build:el": "vite build && electron-builder",
     "serve": "vite preview",
-    "start": "electron .",
+    "start": "cross-env NODE_ENV=development electron .",
     "edev": "yarn dev | yarn start"
   },
   "dependencies": {
@@ -14,7 +15,6 @@
     "animate.css": "^4.1.1",
     "antd": "^4.16.13",
     "axios": "^0.24.0",
-    "electron": "^15.3.0",
     "react": "^17.0.0",
     "react-color": "^2.19.3",
     "react-dom": "^17.0.0",
@@ -24,8 +24,28 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^1.0.0",
+    "cross-env": "^7.0.3",
+    "electron": "^15.3.0",
+    "electron-builder": "^22.13.1",
     "electron-reloader": "^1.2.1",
     "less": "^4.1.2",
     "vite": "^2.6.4"
+  },
+  "build": {
+    "appId": "com.toDoSimple.app",
+    "productName": "toDoSimple",
+    "copyright": "Copyright © 2021 呆呆兽的猫猫",
+    "nsis": {
+      "oneClick": false, 
+      "allowToChangeInstallationDirectory": true
+    },
+    "files": [
+      "dist/**/*",
+      "render/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets",
+      "output": "dist_electron"
+    }
   }
 }

@@ -7,6 +7,7 @@ const { ipcRenderer } = require('electron')
 import './index.less'
 
 const createaddToList = () => ({
+  id: Math.random() + 30,
   text: '',
   checked: false,
   showCheckIcon: false,
@@ -17,9 +18,9 @@ const createaddToList = () => ({
 const Index = () => {
   const [visible, setVisible] = useState(false)
   const contRef = useRef()
-  const [addToList, setaddToList] = useState([createaddToList()])
-  const [todoList, settodoList] = useState([])
-  const [list, setList] = useState([
+  const [addList, setaddList] = useState([createaddToList()])
+  const [List, setList] = useState([])
+  const [bglist, setbgList] = useState([
     {
       title: '内容区背景颜色',
       active: false
@@ -34,70 +35,78 @@ const Index = () => {
   const openColorBox = () => {
     setVisible(true)
   }
- 
+
 
   // inpuit框获取值
   const changeInput = (e, index) => {
     let { value } = e.target
-    let list = [...addToList]
+    let list = [...addList]
     list[index].text = value
-    setaddToList(list)
+    setaddList(list)
   }
 
   // 回车
   const clickEnter = e => {
     let { value } = e.target
-    let list = [...addToList]
     if (!value) return
-    list.push(createaddToList())
-    setaddToList(list)
+    let list = [...addList]
+    let newList = createaddToList()
+    newList.id = list.length
+    list.push(newList)
+    setaddList(list)
     contRef.current.scrollTo(0, contRef.current.scrollHeight)
   }
 
-    // 点击保存
+  // 点击保存
   const clickSave = () => {
-    console.log(addToList, 'add')
-    if (addToList.length == 1 && addToList[0].text == '') return
+    if (addList.length == 1 && addList[0].text == '') return
 
     let params = {
+      id: Math.random(),
       title: new Date().toISOString().slice(0, 10),
-      list: addToList[addToList.length - 1].text == '' ? addToList.slice(0, -1) : addToList
+      list: addList[addList.length - 1].text == '' ? addList.slice(0, -1) : addList
     }
 
     // 写入本地
     ipcRenderer.send('writeFile', params)
 
-      // 监听本地写入成功
-      ipcRenderer.on('onWrite', (event, {status,msg}) => {
-        if(status){
-            console.log(1111)
-          // setaddToList([createaddToList()])
-          
-          getToDoList()
-          return 
-        }
-      })
-  
+    // 监听本地写入成功
+    ipcRenderer.once('onWrite', (event, { status, msg }) => {
+      if (status) {
+        setaddList([createaddToList()])
+        getToDoList()
+        return
+      }
+    })
+
   }
 
-    // 删除卡片
-  const deleteCard=(title)=>{
+  // 打勾
+  const checkCard=(title,list)=>{
+   ipcRenderer.send('updateFile',{title,list})
+  }
+
+  // 删除卡片
+  const deleteCard = (title) => {
     ipcRenderer.send('deleteFile', title)
-    ipcRenderer.on('onDelete',(event,{status,msg})=>{
-      if(status){
+    ipcRenderer.once('onDelete', (event, { status, msg }) => {
+      if (status) {
         getToDoList()
-      }else{
-        console.log(msg,'delmsg')
+      } else {
+        console.log(msg, 'delmsg')
       }
     })
   }
 
+
+
   // 获取list
-  const getToDoList =()=>{
+  const getToDoList = () => {
     ipcRenderer.send('getFiles')
-    ipcRenderer.on('getFile', (event, arg) => {
-      console.log(arg,'ar11g')
-      settodoList(arg)
+    ipcRenderer.once('getFile', (event, arg) => {
+      let arr = [...arg]
+      console.log(arr, 'arr')
+      setList(arr)
     })
   }
 
@@ -117,8 +126,8 @@ const Index = () => {
 
           <div className="content" ref={contRef}>
 
-            {addToList.map((item, index) => (
-              <div key={index} className="addcrad" >
+            {addList.map((item, index) => (
+              <div key={item.id} className="addcrad" >
                 <div className="square" />
                 <Input className="input" autoFocus onChange={e => changeInput(e, index)} placeholder="请输入待办事项" onPressEnter={e => clickEnter(e, index)} />
               </div>
@@ -131,9 +140,13 @@ const Index = () => {
         </div>
 
         <div className="cardList">
-          {todoList.map((item, index) => (
-            <div key={index} className="cardboxout">
-              <CardCom title={item.title} list={item.list} deleteCard={deleteCard} />
+          {List.map((item, index) => (
+            <div key={item.id} className="cardboxout">
+              <CardCom
+                title={item.title}
+                list={item.list}
+                checkCard={checkCard}
+                deleteCard={deleteCard} />
             </div>
           ))}
         </div>
@@ -151,13 +164,14 @@ const Index = () => {
         onClose={() => setVisible(false)}
         visible={visible}
       >
-        {list.map(item => (<div key={item.title} className="colorItem">
-          <h3>{item.title}</h3>
-          <div className="linebox" style={{ background: 'skybule' }}>
-            <div className="line" />
-          </div>
-          {/* <ColorPicker /> */}
-        </div>))}
+        {bglist.map(item => (
+          <div key={item.title} className="colorItem">
+            <h3>{item.title}</h3>
+            <div className="linebox" style={{ background: 'skybule' }}>
+              <div className="line" />
+            </div>
+            {/* <ColorPicker /> */}
+          </div>))}
 
       </Drawer>
 
