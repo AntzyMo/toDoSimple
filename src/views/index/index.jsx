@@ -1,18 +1,20 @@
 import CardCom from '@/components/cardCom/index'
 import { FireFilled } from '@ant-design/icons'
 import { Drawer, Input, Button } from 'antd'
-import ColorPicker from '@/components/colorPicker/index'
 import { useState, useRef, useEffect } from 'react'
 const { ipcRenderer } = require('electron')
+import dayjs from 'dayjs'
+import 'dayjs/locale/zh-cn'
+dayjs.locale('zh-cn')
 import './index.less'
 
 const createaddToList = () => ({
   id: Math.random() + 30,
   text: '',
-  checked: false,
-  showCheckIcon: false,
-  class: '',
-  upclass: ''
+  checked: false,// 显示打钩状态
+  showCheckIcon: false, // 显示打钩图片
+  class: '',  // 动画
+  upclass: ''// 向上动画
 })
 
 const Index = () => {
@@ -20,15 +22,13 @@ const Index = () => {
   const contRef = useRef()
   const [addList, setaddList] = useState([createaddToList()])
   const [List, setList] = useState([])
+  const [showdelBtn, setshowdelBtn] = useState(false)
+  
   const [bglist, setbgList] = useState([
     {
       title: '内容区背景颜色',
       active: false
-    },
-    {
-      title: '内容区字体颜色',
-      active: false
-    },
+    }
   ])
 
   // 打开主题弹窗
@@ -51,7 +51,7 @@ const Index = () => {
     if (!value) return
     let list = [...addList]
     let newList = createaddToList()
-    newList.id = list.length
+    newList.id = Math.random() + 2
     list.push(newList)
     setaddList(list)
     contRef.current.scrollTo(0, contRef.current.scrollHeight)
@@ -63,7 +63,9 @@ const Index = () => {
 
     let params = {
       id: Math.random(),
-      title: new Date().toISOString().slice(0, 10),
+      title: dayjs().format('YYYY-MM-DD'),
+      progress: 0, //进度条
+      showDel: false, //显示删除按钮
       list: addList[addList.length - 1].text == '' ? addList.slice(0, -1) : addList
     }
 
@@ -82,8 +84,17 @@ const Index = () => {
   }
 
   // 打勾
-  const checkCard=(title,list)=>{
-   ipcRenderer.send('updateFile',{title,list})
+  const checkCard = (title, list, progress) => {
+    ipcRenderer.send('updateFile', { title, list, progress })
+  }
+
+  // 点击显示删除按钮
+  const clickDelBtn = () => {
+    setshowdelBtn(v => !v)
+    let list = [...List]
+    list.forEach(item => item.showDel = !item.showDel)
+    console.log(list, 'list')
+    setList(list)
   }
 
   // 删除卡片
@@ -116,11 +127,20 @@ const Index = () => {
 
   return (
     <>
+      <div className="header">
+        <div className=""></div>
+        <div className="operate">
+          <Button type="link" onClick={clickDelBtn}>{showdelBtn ? '隐藏删除按钮' : '显示删除按钮'}</Button>
+        </div>
+
+      </div>
+
+      {/* addList */}
       <div className="box">
         <div className="addCardBox">
           <div className="header">
             <div className="cardTitle">
-              <div className="title-txt">28 周一</div>
+              <div className="title-txt">{dayjs().format('DD dddd')} </div>
             </div>
           </div>
 
@@ -135,16 +155,21 @@ const Index = () => {
 
 
           </div>
+          <div className="saveBtn">
+            <Button onClick={clickSave} type="link" >保存</Button>
+          </div>
 
-          <Button className="saveBtn" onClick={clickSave} type="link" >保存</Button>
         </div>
 
+        {/* list */}
         <div className="cardList">
           {List.map((item, index) => (
             <div key={item.id} className="cardboxout">
               <CardCom
                 title={item.title}
                 list={item.list}
+                progress={item.progress}
+                showDel={item.showDel}
                 checkCard={checkCard}
                 deleteCard={deleteCard} />
             </div>
@@ -157,23 +182,15 @@ const Index = () => {
         <FireFilled style={{ fontSize: '24px', color: 'skyblue' }} />
       </div>
 
-      <Drawer
+      {/* <Drawer
         title="主题换肤"
         placement="right"
         closable={false}
         onClose={() => setVisible(false)}
         visible={visible}
       >
-        {bglist.map(item => (
-          <div key={item.title} className="colorItem">
-            <h3>{item.title}</h3>
-            <div className="linebox" style={{ background: 'skybule' }}>
-              <div className="line" />
-            </div>
-            {/* <ColorPicker /> */}
-          </div>))}
 
-      </Drawer>
+      </Drawer> */}
 
     </>
 

@@ -1,4 +1,3 @@
-const { createCipheriv } = require('crypto')
 const { ipcMain } = require('electron')
 const fs = require('fs')
 const path = require('path')
@@ -39,7 +38,6 @@ const writeFile = (file, data) => {
 const readdir = (file) => {
   return new Promise((resolve, reject) => {
     fs.readdir(file, 'utf8', (err, arr) => {
-      console.log(err, 'err')
       if (err) {
         reject(err)
         return
@@ -51,17 +49,16 @@ const readdir = (file) => {
 
 
 // 封装删除文件
-// url.replace(/\\/g, "/")
- function deleteFile(url) {
+const deleteFile = (url) => {
   return new Promise((resolve, reject) => {
-      fs.unlink(url, err => {
-          if (err) {
-              reject(err)
-          } else {
-              resolve()
-          }
+    fs.unlink(url, err => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve()
+      }
 
-      })
+    })
   })
 }
 
@@ -69,14 +66,29 @@ const readdir = (file) => {
 ipcMain.on('writeFile', async (event, arg) => {
   let { title } = arg
   let fileUrl = baseFileUrl(title) + '.json'
-  console.log(arg, 'are')
-  try {
-    await writeFile(fileUrl, JSON.stringify(arg))
-    event.reply('onWrite', { status: true })
-  } catch (err) {
-    event.reply('onWrite', { status: false, msg: err })
 
+  try {
+    // 先查找是否存在当前日期,有则放到第一位
+    let { list, progress } = await readFile(fileUrl)
+    let arr = [...arg.list, ...list]
+    if (progress) {
+      let num = Math.round(100/arr.length)
+      list.forEach(item => {
+        if (item.checked) {
+          arg.progress += num
+        }
+      })
+    }
+    arg.list = arr
+  } finally {
+    try {
+      await writeFile(fileUrl, JSON.stringify(arg))
+      event.reply('onWrite', { status: true })
+    } catch (err) {
+      event.reply('onWrite', { status: false, msg: err })
+    }
   }
+
 })
 
 
@@ -99,8 +111,8 @@ ipcMain.on('getFiles', async (event, arg) => {
 
   try {
     let res = await Promise.all(FileArr)
-    console.log(res, 'res')
-    event.reply('getFile', res)
+    let handleArr = res.reverse()
+    event.reply('getFile', handleArr)
   } catch (err) {
     console.log(err, 'err111')
   }
@@ -109,24 +121,25 @@ ipcMain.on('getFiles', async (event, arg) => {
 
 // 删除文件
 ipcMain.on('deleteFile', async (event, arg) => {
- let fileUrl = baseFileUrl(arg) + '.json'
- try{
-   await deleteFile(fileUrl)
-   event.reply('onDelete',{status:true})
- }catch(err){
-   console.log(err,'err')
-   event.reply('onDelete',{status:false,msg:err})
+  let fileUrl = baseFileUrl(arg) + '.json'
+  try {
+    await deleteFile(fileUrl)
+    event.reply('onDelete', { status: true })
+  } catch (err) {
+    console.log(err, 'err333')
+    event.reply('onDelete', { status: false, msg: err })
 
- }
+  }
 })
 
 
 
 // 修改文件
-ipcMain.on('updateFile',async (event,{title,list})=>{
-  let fileUrl= baseFileUrl(title) + '.json'
-  let json =await readFile(fileUrl)
-  json.list=list
+ipcMain.on('updateFile', async (event, { title, list, progress }) => {
+  let fileUrl = baseFileUrl(title) + '.json'
+  let json = await readFile(fileUrl)
+  json.progress = progress
+  json.list = list
   writeFile(fileUrl, JSON.stringify(json))
 })
 

@@ -9,8 +9,9 @@ const NODE_ENV = process.env.NODE_ENV
 // 创建浏览器窗口
 const createWindow = () => {
   let win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1000,
+    height: 700,
+    darkTheme :true,
     webPreferences: {
       devTools: true,
       nodeIntegration: true,
@@ -18,11 +19,11 @@ const createWindow = () => {
     }
   })
 
-  win.loadURL(NODE_ENV = 'development' ? 'http://localhost:3000/'
-    : `file://${path.join(__dirname, '../dist/index.html')}`)
-
-  if (NODE_ENV = 'development') {
+  if (NODE_ENV ==='development') {
+    win.loadURL('http://localhost:3000/')
     win.webContents.toggleDevTools() //打开调试工具
+  }else{
+    win.loadFile('./dist/index.html')
   }
 
   // 关闭window时触发下列事件.

@@ -8,6 +8,7 @@
     "build:el": "vite build && electron-builder",
     "serve": "vite preview",
     "start": "cross-env NODE_ENV=development electron .",
+    "start:build": "cross-env NODE_ENV=production electron .",
     "edev": "yarn dev | yarn start"
   },
   "dependencies": {
@@ -15,8 +16,8 @@
     "animate.css": "^4.1.1",
     "antd": "^4.16.13",
     "axios": "^0.24.0",
+    "dayjs": "^1.10.7",
     "react": "^17.0.0",
-    "react-color": "^2.19.3",
     "react-dom": "^17.0.0",
     "react-redux": "^7.2.6",
     "react-router-dom": "^5.3.0",
@@ -36,7 +37,7 @@
     "productName": "toDoSimple",
     "copyright": "Copyright © 2021 呆呆兽的猫猫",
     "nsis": {
-      "oneClick": false, 
+      "oneClick": false,
       "allowToChangeInstallationDirectory": true
     },
     "files": [
