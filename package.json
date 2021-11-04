@@ -37,6 +37,7 @@
     "productName": "toDoSimple",
     "copyright": "Copyright © 2021 呆呆兽的猫猫",
     "icon": "render/assets/favicon.ico",
+    "asar":false,
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
