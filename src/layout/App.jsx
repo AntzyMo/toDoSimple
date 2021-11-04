@@ -20,7 +20,7 @@ function App() {
 
         <Layout>
           <Content style={{ background: ' #1a1b20' }}>
-            <div style={{ padding: 24, background: ' #1a1b20' }}>
+            <div style={{ padding: '24px 24px 24px 50px', background: ' #1a1b20' }}>
               <Index />
             </div>
           </Content>

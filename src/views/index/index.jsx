@@ -178,9 +178,9 @@ const Index = () => {
       </div>
 
       {/* 换肤 */}
-      <div className="colorBox" onClick={openColorBox}>
+      {/* <div className="colorBox" onClick={openColorBox}>
         <FireFilled style={{ fontSize: '24px', color: 'skyblue' }} />
-      </div>
+      </div> */}
 
       {/* <Drawer
         title="主题换肤"
