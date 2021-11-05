@@ -1,6 +1,6 @@
 {
   "name": "todosimple",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "main": "./render/electron.js",
   "scripts": {
     "dev": "vite --host",
@@ -37,7 +37,7 @@
     "productName": "toDoSimple",
     "copyright": "Copyright © 2021 呆呆兽的猫猫",
     "icon": "render/assets/favicon.ico",
-    "asar":false,
+    "asar": false,
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true

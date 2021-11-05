@@ -1,7 +1,9 @@
 const path = require('path')
 const { app, BrowserWindow, Menu, Tray } = require('electron')
 const getIcon = path.join(__dirname, '../render/assets/') //获取图标
+const gotTheLock = app.requestSingleInstanceLock() // 监听多个窗口
 const NODE_ENV = process.env.NODE_ENV
+
 Menu.setApplicationMenu(null) // 清除标题栏
 let tray = null // 托盘对象
 let win = null
@@ -59,7 +61,7 @@ const setAppTray = () => {
 
   // 监听鼠标单击
   tray.on('click', () => {
-    let showwin=!win.isVisible()
+    let showwin = !win.isVisible()
     if (showwin) {
       win.show()
       win.setSkipTaskbar(false)
@@ -79,8 +81,12 @@ const setAppTray = () => {
   tray.setContextMenu(contextMenu)
 }
 
+console.log(gotTheLock, 'gotTheLock')
+
 // 监听初始化完成
 app.whenReady().then(() => {
+  if (!gotTheLock) return
+
   setAppTray()
   createWindow()
 
@@ -92,8 +98,6 @@ app.whenReady().then(() => {
   }
   )
 })
-
-
 
 
 // 所有窗口关闭时退出应用.

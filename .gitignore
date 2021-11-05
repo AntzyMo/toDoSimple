@@ -3,4 +3,5 @@ node_modules
 dist
 dist_electron
 dist-ssr
+render/data
 *.local

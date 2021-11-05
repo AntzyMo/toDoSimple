@@ -72,7 +72,7 @@ ipcMain.on('writeFile', async (event, arg) => {
     let { list, progress } = await readFile(fileUrl)
     let arr = [...arg.list, ...list]
     if (progress) {
-      let num = Math.round(100/arr.length)
+      let num = Math.round(100 / arr.length)
       list.forEach(item => {
         if (item.checked) {
           arg.progress += num
@@ -120,10 +120,19 @@ ipcMain.on('getFiles', async (event, arg) => {
 
 
 // 删除文件
-ipcMain.on('deleteFile', async (event, arg) => {
-  let fileUrl = baseFileUrl(arg) + '.json'
+ipcMain.on('deleteFile', async (event, { title, index }) => {
+  let fileUrl = baseFileUrl(title) + '.json'
   try {
-    await deleteFile(fileUrl)
+    if (index!=undefined) {
+      let json = await readFile(fileUrl)
+      json.list.splice(index, 1)
+      console.log( json.list,' json.list')
+      await writeFile(fileUrl, JSON.stringify(json))
+      console.log('ccc')
+    } else {
+      await deleteFile(fileUrl)
+    }
+
     event.reply('onDelete', { status: true })
   } catch (err) {
     console.log(err, 'err333')

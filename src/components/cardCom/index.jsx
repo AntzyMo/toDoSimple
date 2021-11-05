@@ -14,6 +14,11 @@ class CardCom extends Component {
     }
   }
 
+  componentDidUpdate(preProps) {
+    if (this.props.list !== preProps.list) {
+      this.setState({ list: this.props.list })
+    }
+  }
 
   clickCheck(e, item, index) {
     e.preventDefault() //阻止默认行为
@@ -63,15 +68,27 @@ class CardCom extends Component {
 
           <div className="content">
             {list.map((item, index) => (
-              <div key={index} className={`checkbox animate__animated animate__${item.upclass || ''}`} onClick={(e) => this.clickCheck(e, item, index)}>
+              <div key={item.id}
+                className={`checkbox animate__animated animate__${item.upclass || ''}`}
+                onClick={(e) => this.clickCheck(e, item, index)}>
                 {
                   item.showCheckIcon ?
                     (<div className={`checkedbox animate__animated animate__${item.class || ''}`} >
                       <div className="acText">{item.text}</div>
-                      <img className="checkicon" src={checkImg} />
+                      {showDel ?
+                        (<Button type="link" size="small" onClick={(e) => this.props.deleteCard(e, title, index)}>删除</Button>) :
+                        (<img className="checkicon" src={checkImg} />)
+                      }
+
+
                     </div>)
-                    :
-                    <Checkbox className={`animate__animated animate__${item.class || ''}`} checked={item.checked} style={{ color: 'skyblue' }}>{item.text}</Checkbox>
+                    : (<div className={`checkedbox animate__animated animate__${item.class || ''}`}>
+                      <Checkbox checked={item.checked} style={{ color: 'skyblue' }}>{item.text}</Checkbox>
+                      {showDel && <Button type="link" size="small" onClick={(e) => this.props.deleteCard(e, title, index)}>删除</Button>}
+
+                    </div>)
+
+
 
                 }
 

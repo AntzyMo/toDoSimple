@@ -23,7 +23,7 @@ const Index = () => {
   const [addList, setaddList] = useState([createaddToList()])
   const [List, setList] = useState([])
   const [showdelBtn, setshowdelBtn] = useState(false)
-  
+
   const [bglist, setbgList] = useState([
     {
       title: '内容区背景颜色',
@@ -98,8 +98,10 @@ const Index = () => {
   }
 
   // 删除卡片
-  const deleteCard = (title) => {
-    ipcRenderer.send('deleteFile', title)
+  const deleteCard = (e,title, index) => {
+    console.log(e,'e')
+    e.stopPropagation() //阻止向上冒泡
+    ipcRenderer.send('deleteFile', { title, index })
     ipcRenderer.once('onDelete', (event, { status, msg }) => {
       if (status) {
         getToDoList()
