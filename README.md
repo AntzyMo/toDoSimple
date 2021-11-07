@@ -1,3 +1,3 @@
 ## toDoSimple-待办事项
 
-<img src="./render/assets/todoSimple.gif"/>
+<img src="https://github.com/ZhBano/toDoSimple/tree/main/render/assets/todoSimple.gif"/>
