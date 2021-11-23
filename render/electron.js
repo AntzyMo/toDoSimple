@@ -1,24 +1,27 @@
-const path = require('path')
-const { app, BrowserWindow, Menu, Tray } = require('electron')
-const getIcon = path.join(__dirname, '../render/assets/') //获取图标
+import path from 'path'
+import { app, BrowserWindow, Menu, Tray, globalShortcut ,Notification}  from 'electron'
+const getIcon = path.resolve(__dirname,'../assets/favicon.ico') //获取图标
 const gotTheLock = app.requestSingleInstanceLock() // 监听多个窗口
 const NODE_ENV = process.env.NODE_ENV
-
 Menu.setApplicationMenu(null) // 清除标题栏
+import './file'
+
 let tray = null // 托盘对象
 let win = null
-require('./file')
 
-// try {
-//   require('electron-reloader')(module);
-// } catch { }
+console.log('踩刹车时踩刹车1')
+
+
+console.log(Notification.isSupported())
+
+let  notification = null  
 
 // 创建浏览器窗口
 const createWindow = () => {
   win = new BrowserWindow({
     width: 1000,
     height: 700,
-    icon: path.join(getIcon, 'favicon.ico'),
+    ico:getIcon,
     webPreferences: {
       devTools: true,
       nodeIntegration: true,
@@ -26,6 +29,7 @@ const createWindow = () => {
     }
   })
 
+  
   if (NODE_ENV === 'development') {
     win.loadURL('http://localhost:3000/')
     win.webContents.toggleDevTools() //打开调试工具
@@ -47,7 +51,7 @@ const createWindow = () => {
 
 const setAppTray = () => {
   // 系统托盘图标目录
-  tray = new Tray(path.join(getIcon, 'favicon.ico'))
+  tray = new Tray(getIcon)
 
   // 图标的上下文菜单  系统托盘右键菜单
   const contextMenu = Menu.buildFromTemplate([
@@ -81,13 +85,12 @@ const setAppTray = () => {
   tray.setContextMenu(contextMenu)
 }
 
-console.log(gotTheLock, 'gotTheLock')
 
 // 监听初始化完成
 app.whenReady().then(() => {
   if (!gotTheLock) return
-
   setAppTray()
+
   createWindow()
 
   //监听应用打开 （macOs）
@@ -97,6 +100,20 @@ app.whenReady().then(() => {
     }
   }
   )
+})
+
+
+app.on('ready', () => {
+  notification=new Notification({
+    title:'桌面通知！！！',
+    body :'终于实现electron热加载啦！！！'
+  })
+ 
+  globalShortcut.register('ctrl+alt+a', () => {
+    notification.show()
+    console.log('快捷键2')
+  })
+  
 })
 
 

@@ -7,7 +7,6 @@ import dayjs from 'dayjs'
 import 'dayjs/locale/zh-cn'
 dayjs.locale('zh-cn')
 import './index.less'
-
 const createaddToList = () => ({
   id: Math.random() + 30,
   text: '',

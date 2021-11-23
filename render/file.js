@@ -1,7 +1,7 @@
-const { ipcMain } = require('electron')
-const fs = require('fs')
-const path = require('path')
-const baseFileUrl = (title = '') => `${path.join(__dirname, 'data', title)}`
+import {ipcMain} from 'electron'
+import fs from 'fs'
+import path from 'path'
+const baseFileUrl= (title='')=>`${path.join(__dirname, '../data', title)}`
 
 // 封装读取文件
 const readFile = file => {
@@ -29,8 +29,6 @@ const writeFile = (file, data) => {
     })
   })
 }
-
-
 
 
 
