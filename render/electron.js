@@ -1,27 +1,26 @@
 import path from 'path'
-import { app, BrowserWindow, Menu, Tray, globalShortcut ,Notification}  from 'electron'
-const getIcon = path.resolve(__dirname,'../assets/favicon.ico') //获取图标
+import { app, BrowserWindow, Menu, Tray, globalShortcut, Notification } from 'electron' // 清除标题栏
+import './file'
+const getIcon = path.resolve(__dirname, '../assets/favicon.ico') // 获取图标
 const gotTheLock = app.requestSingleInstanceLock() // 监听多个窗口
 const NODE_ENV = process.env.NODE_ENV
-Menu.setApplicationMenu(null) // 清除标题栏
-import './file'
+Menu.setApplicationMenu(null)
 
 let tray = null // 托盘对象
 let win = null
 
 console.log('踩刹车时踩刹车1')
 
-
 console.log(Notification.isSupported())
 
-let  notification = null  
+let notification = null
 
 // 创建浏览器窗口
 const createWindow = () => {
   win = new BrowserWindow({
     width: 1000,
     height: 700,
-    ico:getIcon,
+    ico: getIcon,
     webPreferences: {
       devTools: true,
       nodeIntegration: true,
@@ -29,10 +28,9 @@ const createWindow = () => {
     }
   })
 
-  
   if (NODE_ENV === 'development') {
     win.loadURL('http://localhost:3000/')
-    win.webContents.toggleDevTools() //打开调试工具
+    win.webContents.toggleDevTools() // 打开调试工具
   } else {
     win.loadFile('./dist/index.html')
   }
@@ -43,8 +41,6 @@ const createWindow = () => {
     win.hide()
     win.setSkipTaskbar(true)
   })
-
-
 }
 
 // 设置系统托盘
@@ -57,7 +53,7 @@ const setAppTray = () => {
   const contextMenu = Menu.buildFromTemplate([
     {
       label: '退出',
-      click() {
+      click () {
         app.exit()
       }
     }
@@ -65,7 +61,7 @@ const setAppTray = () => {
 
   // 监听鼠标单击
   tray.on('click', () => {
-    let showwin = !win.isVisible()
+    const showwin = !win.isVisible()
     if (showwin) {
       win.show()
       win.setSkipTaskbar(false)
@@ -74,8 +70,6 @@ const setAppTray = () => {
 
     win.hide()
     win.setSkipTaskbar(true)
-
-
   })
 
   // 设置此托盘图标的悬停提示内容
@@ -85,7 +79,6 @@ const setAppTray = () => {
   tray.setContextMenu(contextMenu)
 }
 
-
 // 监听初始化完成
 app.whenReady().then(() => {
   if (!gotTheLock) return
@@ -93,7 +86,7 @@ app.whenReady().then(() => {
 
   createWindow()
 
-  //监听应用打开 （macOs）
+  // 监听应用打开 （macOs）
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow()
@@ -102,20 +95,17 @@ app.whenReady().then(() => {
   )
 })
 
-
 app.on('ready', () => {
-  notification=new Notification({
-    title:'桌面通知！！！',
-    body :'终于实现electron热加载啦！！！'
+  notification = new Notification({
+    title: '桌面通知！！！',
+    body: '终于实现electron热加载啦！！！'
   })
- 
+
   globalShortcut.register('ctrl+alt+a', () => {
     notification.show()
     console.log('快捷键2')
   })
-  
 })
-
 
 // 所有窗口关闭时退出应用.
 app.on('window-all-closed', () => {
